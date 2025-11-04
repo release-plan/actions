@@ -34,7 +34,7 @@ runs:
     - name: "Find Release Plan Version"
       id: find-release-plan-version
       # This is annoying https://github.com/actions/toolkit/issues/1264
-      uses: release-plan/actions/find-release-plan-version@{{ inputs.action-version }}
+      uses: release-plan/actions/find-release-plan-version@${{ inputs.action-version }}
     - name: "Generate Explanation and Prep Changelogs"
       id: explanation
       run: |
