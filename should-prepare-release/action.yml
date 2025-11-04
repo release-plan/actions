@@ -33,6 +33,8 @@ runs:
               "${{ github.event_name }}" == "workflow_dispatch" || \
               ("${{ github.event_name }}" == "pull_request_target" && "${{ github.event.pull_request.merged }}" == "true") ]]; then
           echo "should_prepare=true" >> $GITHUB_OUTPUT
+          echo "should_prepare=true"
         else
           echo "should_prepare=false" >> $GITHUB_OUTPUT
+          echo "should_prepare=false"
         fi
