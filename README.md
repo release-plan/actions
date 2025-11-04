@@ -6,9 +6,13 @@ See [create-release-plan-setup](https://github.com/release-plan/create-release-p
 
 ## Actions 
 
-### check-if-release
+### should-prepare-release
 
 Checks out the `ref` and determines if the current commit triggers a release.
+If it is a release, don't output that prepare should run. Also only run
+prepare on push event or workflow dispatch if plan wasn't updated 
+(don't create a release plan when we're releasing) and only run on labeled event 
+if the PR has already been merged.
 
 ### find-release-plan-version
 
