@@ -13,7 +13,8 @@ runs:
       id: find-release-plan-version
       run: |
         semver_string=$(jq -r '.devDependencies["release-plan"]' package.json)
-        release_plan_version=$(npm view release-plan@${semver_string} version)
+        echo "Found release-plan@$semver_string in package.json"
+        release_plan_version=$(npm view release-plan@${semver_string} --json version | tail -n1)
         echo "Using release-plan@$release_plan_version"
         echo "release_plan_version=$release_plan_version" >> $GITHUB_OUTPUT
       shell: bash
