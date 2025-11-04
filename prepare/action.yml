@@ -17,7 +17,7 @@ inputs:
   action-version:
     description: 'Version of release-plan actions to use, SHA or tag'
     required: true
-    default: 'latest'
+    default: 'v1'
 
 runs:
   using: "composite"
