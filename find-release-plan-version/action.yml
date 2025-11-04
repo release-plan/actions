@@ -1,0 +1,19 @@
+name: Find Release Plan Version
+description: 'Install Release Plan; checkout must run first'
+
+outputs:
+  version:
+    description: "The version of release plan to use"
+    value: ${{ steps.find-release-plan-version.outputs.release_plan_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Find Release Plan Version"
+      id: find-release-plan-version
+      run: |
+        semver_string=$(jq -r '.devDependencies["release-plan"]' package.json)
+        release_plan_version=$(npm view release-plan@${semver_string} version)
+        echo "Using release-plan@$release_plan_version"
+        echo "release_plan_version=$release_plan_version" >> $GITHUB_OUTPUT
+      shell: bash

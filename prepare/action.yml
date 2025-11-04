@@ -1,0 +1,60 @@
+name: Run release-plan prepare
+description: 'Run `release-plan prepare`'
+
+outputs:
+  new-version:
+    description: "If a single package, the new version to be released"
+    value: ${{ steps.explanation.outputs.new_version }}
+  text:
+    description: "The explanation of the release plan"
+    value: ${{ steps.explanation.outputs.text }}
+
+inputs:
+  ref:
+    description: 'Primary branch'
+    required: true
+    default: 'main'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      # We need to download lots of history so that
+      # github-changelog can discover what's changed since the last release
+      with:
+        fetch-depth: 0
+        ref: ${{ inputs.ref }}
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 24
+    - name: "Find Release Plan Version"
+      id: find-release-plan-version
+      # This is annoying https://github.com/actions/toolkit/issues/1264
+      uses: release-plan/actions/find-release-plan-version@v1 
+    - name: "Generate Explanation and Prep Changelogs"
+      id: explanation
+      run: |
+        echo "::group::Running release-plan prepare"
+        set +e
+        npx release-plan@${{ steps.find-release-plan-version.outputs.version }} prepare 2> >(tee -a release-plan-stderr.txt >&2)
+
+        if [ $? -ne 0 ]; then
+          release_plan_output=$(cat release-plan-stderr.txt)
+          echo "::error::Failed to run release-plan prepare $release_plan_output"
+        else
+          release_plan_output=$(jq .description .release-plan.json -r)
+          rm release-plan-stderr.txt
+
+          if [ $(jq '.solution | length' .release-plan.json) -eq 1 ]; then
+            new_version=$(jq -r '.solution[].newVersion' .release-plan.json)
+            echo "Outputs new-version: $new_version"
+            echo "new_version=v$new_version" >> $GITHUB_OUTPUT
+          else 
+            echo "Outputs new-version: More than one package, so no new-version"
+          fi
+        fi
+        echo 'text<<EOF' >> $GITHUB_OUTPUT
+        echo "$release_plan_output" >> $GITHUB_OUTPUT
+        echo 'EOF' >> $GITHUB_OUTPUT
+        echo "::endgroup::"
+      shell: bash
