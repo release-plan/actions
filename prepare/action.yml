@@ -14,10 +14,6 @@ inputs:
     description: 'Primary branch'
     required: true
     default: 'main'
-  action-version:
-    description: 'Version of release-plan actions to use, SHA or tag'
-    required: true
-    default: 'v1'
 
 runs:
   using: "composite"
@@ -34,7 +30,8 @@ runs:
     - name: "Find Release Plan Version"
       id: find-release-plan-version
       # This is annoying https://github.com/actions/toolkit/issues/1264
-      uses: release-plan/actions/find-release-plan-version@${{ inputs.action-version }}
+      # ON RELEASE: Update below to the latest major tag
+      uses: release-plan/actions/find-release-plan-version@v1
     - name: "Generate Explanation and Prep Changelogs"
       id: explanation
       run: |

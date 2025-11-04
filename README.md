@@ -19,11 +19,11 @@ Finds the version of the release plan in the current root.
 Runs `release-plan prepare` for the `ref` passed. Outputs the next version 
 as determined by `release-plan prepare` as well as the output text.
 
-Also takes as an input the version of release-plan/actions to use. This is to support
-orgs and repos that restrict actions to hardcoding SHAs. 
-
 ## Development
 
 ### Release
 
-To release, create a new release on GitHub with a tag. 
+Before a major release, update the version in prepare/action.yml where it says
+`ON RELEASE:`. Unfortunately, there is no good way to dynamically reference
+the version of the set of actions. 
+To release, create a new release on GitHub with a tag.
