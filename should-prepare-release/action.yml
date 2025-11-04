@@ -1,0 +1,38 @@
+name: Should Prepare Release?
+description: 'Checks if release-plan should prepare a release'
+
+outputs:
+  should-prepare:
+    description: Should release-plan prepare a release? String 'true' or 'false'.
+    value: ${{ steps.should-prepare.outputs.should_prepare }}
+
+inputs:
+  ref:
+    description: 'Primary branch'
+    required: true
+    default: 'main'
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        ref: ${{ inputs.ref }}
+    - id: check-release
+      # "String 'release' when the latest commit modified the .release-plan.json file to trigger a release"
+      run: if git diff --name-only HEAD HEAD~1 | grep -w -q ".release-plan.json"; then echo "is_release=release" >> $GITHUB_OUTPUT; fi      
+      shell: bash
+    - id: should-prepare
+      shell: bash
+      # only run on push event or workflow dispatch if plan wasn't updated (don't create a release plan when we're releasing)
+      # only run on labeled event if the PR has already been merged
+      run: |
+        if [[ "${{ steps.check-release.is_release }}" != "release" ]] && \
+           [[ "${{ github.event_name }}" == "push" || \
+              "${{ github.event_name }}" == "workflow_dispatch" || \
+              ("${{ github.event_name }}" == "pull_request_target" && "${{ github.event.pull_request.merged }}" == "true") ]]; then
+          echo "should_prepare=true" >> $GITHUB_OUTPUT
+        else
+          echo "should_prepare=false" >> $GITHUB_OUTPUT
+        fi
