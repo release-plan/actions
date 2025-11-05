@@ -32,12 +32,14 @@ runs:
       # This is annoying https://github.com/actions/toolkit/issues/1264
       # ON RELEASE: Update below to the latest major tag
       uses: release-plan/actions/find-release-plan-version@v1
+    - name: "Install Release Plan"
+      run: npm install -g release-plan@${{ steps.find-release-plan-version.outputs.version }}
+      shell: bash
     - name: "Generate Explanation and Prep Changelogs"
       id: explanation
       run: |
         echo "::group::Running release-plan prepare"
         set +e
-        npm install -g release-plan@${{ steps.find-release-plan-version.outputs.version }}
         release-plan prepare 2> >(tee -a release-plan-stderr.txt >&2)
 
         if [ $? -ne 0 ]; then
