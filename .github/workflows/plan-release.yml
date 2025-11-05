@@ -24,7 +24,7 @@ jobs:
     outputs:
       should-prepare: ${{ steps.should-prepare.outputs.should-prepare }}
     steps:
-      - uses: ./actions/should-prepare-release
+      - uses: ./should-prepare-release
         with:
           ref: 'main'
         id: should-prepare
@@ -40,7 +40,7 @@ jobs:
       pull-requests: write
     if: needs.should-run-release-plan-prepare.outputs.should-prepare == 'true'    
     steps:
-      - uses: ./actions/prepare
+      - uses: ./prepare
         name: Run release-plan prepare
         with:
           ref: 'main'
