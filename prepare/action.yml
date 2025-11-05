@@ -37,7 +37,8 @@ runs:
       run: |
         echo "::group::Running release-plan prepare"
         set +e
-        npx release-plan@${{ steps.find-release-plan-version.outputs.version }} prepare 2> >(tee -a release-plan-stderr.txt >&2)
+        npm install -g release-plan@${{ steps.find-release-plan-version.outputs.version }}
+        release-plan prepare 2> >(tee -a release-plan-stderr.txt >&2)
 
         if [ $? -ne 0 ]; then
           release_plan_output=$(cat release-plan-stderr.txt)
