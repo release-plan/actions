@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-action-version:
+    name: Check version used by prepare action version matches latest tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Get latest tag
+        id: latest-tag
+        run: |
+          latest_tag=$(git tag --sort=-v:refname | head -n 1)
+          echo "tag=$latest_tag" >> $GITHUB_OUTPUT
+          echo "Latest tag: $latest_tag"
+        shell: bash
+      - name: Check prepare/action.yml references latest tag
+        run: |
+          referenced_tag=$(grep -A1 "ON RELEASE: Update below to the latest major tag" prepare/action.yml | tail -n1 | grep -oP '@\K[^$]+' || true)
+          latest_tag="${{ steps.latest-tag.outputs.tag }}"
+
+          echo "Referenced tag in prepare/action.yml = $referenced_tag"
+          echo "Latest tag in repo = $latest_tag"
+
+          if [ "$referenced_tag" != "$latest_tag" ]; then
+            echo "::error::Tag mismatch! prepare/action.yml references @$referenced_tag but latest tag is $latest_tag"
+            exit 1
+          fi
+
+          echo "✓ Tag matches latest: $referenced_tag"
+        shell: bash
