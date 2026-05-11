@@ -1,0 +1,4 @@
+{
+  "solution": {},
+  "description": "## Release (2026-05-11)\n\n\n\n#### :bug: Bug Fix\n* [#12](https://github.com/release-plan/actions/pull/12) Fix referenced actions by updating shas ([@kategengler](https://github.com/kategengler))\n\n#### Committers: 1\n- Katie Gengler ([@kategengler](https://github.com/kategengler))\n"
+}
