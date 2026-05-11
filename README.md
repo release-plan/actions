@@ -25,6 +25,8 @@ as determined by `release-plan prepare` as well as the output text.
 
 ## Development
 
+Update actions to full shas by using `npx actions-up`. 
+
 ### Release
 
 Before a major release, update the version in prepare/action.yml where it says
