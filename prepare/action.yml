@@ -31,7 +31,7 @@ runs:
       id: find-release-plan-version
       # This is annoying https://github.com/actions/toolkit/issues/1264
       # ON RELEASE: Update below to the latest sha
-      uses: release-plan/actions/find-release-plan-version@f92e35b6889c1128d3c45875aada8097d5ed802a # v1.0.2
+      uses: release-plan/actions/find-release-plan-version@6c3ed416f1760caae613744d48eb4b15bceb8012 # v1.1.0
     - name: "Install Release Plan"
       run: npm install -g release-plan@${{ steps.find-release-plan-version.outputs.version }}
       shell: bash
